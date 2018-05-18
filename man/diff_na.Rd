@@ -10,7 +10,7 @@ diff_na(x, ...)
 A version of \code{\link{diff}} which returns a vector
 of the same length as the original (beginning with a NA),
 and does not propagates NAs. \code{diff_na} takes the same
-parameters as \code{\link{diff}}
+parameters as \code{\link{diff}}.
 }
 \seealso{
 \code{\link{diff}} for valid parameters to \code{diff_na}.
