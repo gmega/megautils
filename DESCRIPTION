@@ -6,11 +6,11 @@ Author: Giuliano Mega
 Maintainer: Giuliano Mega <giuliano.mega@gmail.com>
 Description: A heterogeneous collection of utility functions that I 
    use daily.
-License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr (>= 0.7.4), purrr (>= 0.2.4), readr (>= 1.1.1), tidyr (>= 0.7.2), R6 (>= 2.2.2), stringr (>= 1.2.0)
+Imports: dplyr (>= 0.7.4), purrr (>= 0.2.4), readr (>= 1.1.1), tidyr (>= 0.7.2), R6 (>= 2.2.2), stringr (>= 1.2.0), lubridate (>= 1.7.4)
 Collate: 
+    'datetime.R'
     'dplyr-extras.R'
     'dplyr-lists.R'
     'shortcuts.R'

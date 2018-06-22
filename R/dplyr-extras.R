@@ -42,6 +42,18 @@ t.tibble <- function(X, cols = 'columns') {
 }
 
 #' @export
+count_defined <- function(X, ...) {
+  cols <- dplyr::select_vars(names(X), ...)
+  X %>% summarise_at(vars(cols), funs(sum(!is.na(.))))
+}
+
+#' @export
+if_na <- function(X, default) {
+  X[is.na(X)] <- default
+  X
+}
+
+#' @export
 unnest <- function(X) {
   for (colname in names(X)) {
     column <- X[[colname]]
