@@ -1,4 +1,4 @@
-#' Easily import and cache remote database tables as tibbles.
+#' Inspect and import/cache database tables as tibbles.
 #'
 #' Utility functions for reading remote database tables (using SQL) into 
 #' tibbles and caching them into disk for future use.
@@ -38,18 +38,37 @@
 #'    \item{`cached_tables()`}{utility function for creating several cached
 #'    table references from their names alone.}
 #' }
+#' 
+#' @param reference a lazy table reference.
+#' 
+#' @param name a string containing the name of the lazy table reference. For
+#'     `db_table` and `cached_table`, this has to match the name of the table in 
+#'     the database and/or the name of the cache file.
+#' 
+#' @param conn a database connection created with `DBI::dbConnect`.
+#' 
+#' @param query a string containing a (possibly parametric) SQL query.
+#' 
+#' @param query_parameters a list of named parameters (e.g. 
+#' `list(par1='value1', par2='value2')` to be substituted into the query.
+#'  
+#' @param ref_parameters a list of named parameters to be passed to `ref_type`
+#'  with each call.
+#'  
+#' @param ref_type a lazy reference type. Either `db_table`, `cached_table`, or,
+#' less commonly, `parametric_table` or `cached_table`.
 #'
-#'
+#' @rdname db
 #' @export
 materialize <- function(reference, ...)
   UseMethod('materialize', reference)
 
-#' @rdname size
+#' @rdname db
 #' @export
 size <- function(reference, ...)
   UseMethod('size', reference)
 
-#' @rdname import
+#' @rdname db
 #' @export
 import <- function(reference, ignore_cache = FALSE) {
   cached <- cache_file(reference)
@@ -70,7 +89,7 @@ cache_file <- function(reference) {
   sprintf('%s.rds', reference$name)
 }
 
-#' @rdname cached_table
+#' @rdname db
 #' @export
 cached_table <- function(name) {
   obj <- list(name = name)
@@ -100,7 +119,7 @@ print.cached_table <- function(reference) {
   )
 }
 
-#' @rdname db_table
+#' @rdname db
 #' @export
 db_table <- function(conn, name) {
   obj <- list(name = name, conn = conn)
@@ -129,7 +148,7 @@ size.db_table <- function(reference) {
   ) %>% collect()
 }
 
-#' @rdname query_table
+#' @rdname db
 #' @export
 query_table <- function(conn, query, name) {
   obj <- list(name = name, conn = conn)
@@ -138,7 +157,7 @@ query_table <- function(conn, query, name) {
   obj
 }
 
-#' @rdname parametric_reference
+#' @rdname db
 #' @export
 parametric_reference <- function(conn, query, name, query_parameters) {
   query_table(
@@ -153,7 +172,7 @@ materialize.query_table <- function(reference) {
   tbl(reference$conn, sql(reference$query))
 }
 
-#' @rdname import_all
+#' @rdname db
 #' @export
 import_all <- function(...) {
   for (table in c(...)) {
@@ -161,8 +180,9 @@ import_all <- function(...) {
   }
 }
 
-#' @rdname cached_tables
+#' @rdname db
 #' @export
-table_references <- function(ref_type, pars = l(), ...) {
-  lapply(rlang::dots_list(...), function(name) do.call(ref_type, args = c(name = name, pars)))
+table_references <- function(ref_type, ref_parameters = l(), ...) {
+  lapply(rlang::dots_list(...), function(name) do.call(
+    ref_type, args = c(name = name, ref_parameters)))
 }

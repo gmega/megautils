@@ -2,9 +2,53 @@
 % Please edit documentation in R/db.R
 \name{materialize}
 \alias{materialize}
-\title{Easily import and cache remote database tables as tibbles.}
+\alias{size}
+\alias{import}
+\alias{cached_table}
+\alias{db_table}
+\alias{query_table}
+\alias{parametric_reference}
+\alias{import_all}
+\alias{table_references}
+\title{Inspect and import/cache database tables as tibbles.}
 \usage{
 materialize(reference, ...)
+
+size(reference, ...)
+
+import(reference, ignore_cache = FALSE)
+
+cached_table(name)
+
+db_table(conn, name)
+
+query_table(conn, query, name)
+
+parametric_reference(conn, query, name, query_parameters)
+
+import_all(...)
+
+table_references(ref_type, ref_parameters = l(), ...)
+}
+\arguments{
+\item{reference}{a lazy table reference.}
+
+\item{name}{a string containing the name of the lazy table reference. For
+`db_table` and `cached_table`, this has to match the name of the table in 
+the database and/or the name of the cache file.}
+
+\item{conn}{a database connection created with `DBI::dbConnect`.}
+
+\item{query}{a string containing a (possibly parametric) SQL query.}
+
+\item{query_parameters}{a list of named parameters (e.g. 
+`list(par1='value1', par2='value2')` to be substituted into the query.}
+
+\item{ref_type}{a lazy reference type. Either `db_table`, `cached_table`, or,
+less commonly, `parametric_table` or `cached_table`.}
+
+\item{ref_parameters}{a list of named parameters to be passed to `ref_type`
+with each call.}
 }
 \description{
 Utility functions for reading remote database tables (using SQL) into 

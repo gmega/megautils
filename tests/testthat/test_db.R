@@ -46,7 +46,7 @@ test_that('table_references works', {
   import_all(
     table_references(
       ref_type = db_table,
-      pars = l(conn = conn),
+      ref_parameters = l(conn = conn),
       'city',
       'country',
       'countrylanguage'
