@@ -82,7 +82,6 @@ import <- function(reference, ignore_cache = FALSE) {
   }
   env <- parent.frame(n = length(sys.parents()))
   env[[reference$name]] <- data
-  data  
 }
 
 cache_file <- function(reference) {

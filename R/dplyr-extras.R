@@ -34,9 +34,9 @@ rename_columns <- function(X, ...) {
 }
 
 #' @export
-t.tibble <- function(X, cols = 'columns') {
+t.tbl <- function(X, cols = 'columns') {
   t_colnames <- names(X)
-  Y <- X %>% t %>% as.tibble
+  Y <- X %>% t.data.frame %>% as_tibble
   Y[[cols]] <- t_colnames
   Y %>% order_columns(initial = c(cols))
 }
