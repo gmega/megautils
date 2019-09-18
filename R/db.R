@@ -72,7 +72,17 @@ size <- function(reference, ...)
 
 #' @rdname db
 #' @export
-import <- function(reference, ignore_cache = FALSE, global = TRUE) {
+import <- function(reference, ignore_cache = FALSE, global = TRUE, 
+                   overwrite = TRUE) {
+  target_env <- if (global) sys.frame(which = 0) else parent.frame(n = 1)
+  if ((reference$name %in% names(target_env)) && !overwrite) {
+    message(paste(
+      'element', reference$name, 'already present in target environment',
+      'and overwrite set to FALSE. Skipping.'
+    ))
+    return()
+  }
+  
   cached <- cache_file(reference)
   if (file.exists(cached) & !ignore_cache) {
     message(sprintf('- read %s from local cache', cached))
@@ -82,8 +92,8 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE) {
     data <- materialize(reference) %>% collect()
     write_rds(data, cached, 'gz')
   }
-  env <- if(global) sys.frame(which = 0) else parent.frame(n = 1)
-  env[[reference$name]] <- data
+  
+  target_env[[reference$name]] <- data
 }
 
 cache_file <- function(reference) {

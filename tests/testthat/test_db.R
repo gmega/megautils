@@ -58,7 +58,7 @@ test_that('table_references works', {
   expect_equal(nrow(countrylanguage), 984)
 })
 
-test_that('null connection loads cached table', {
+test_that('null connection loads cached table on import', {
   import(query_table(conn = conn, name = 'city', query = 'SELECT * FROM city'))
   expect_false(is.null(.GlobalEnv$city))
   expect_equal(nrow(city), 4079)
@@ -67,6 +67,16 @@ test_that('null connection loads cached table', {
   expect_true(is.null(.GlobalEnv$city))
 
   import(query_table(conn = NULL, name = 'city', query = 'SELECT * FROM city'))
+  expect_equal(nrow(city), 4079)
+})
+
+test_that('import does not overwrite existing objects if told so', {
+  city <- 'please do not overwrite me!'
+  import(db_table(name = 'city', conn = conn), overwrite = FALSE, 
+         global = FALSE)
+  expect_equal(city, 'please do not overwrite me!')
+  
+  import(db_table(name = 'city', conn = conn), global = FALSE)
   expect_equal(nrow(city), 4079)
 })
 
