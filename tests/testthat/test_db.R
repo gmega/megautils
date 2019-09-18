@@ -57,3 +57,32 @@ test_that('table_references works', {
   expect_equal(nrow(country), 239)
   expect_equal(nrow(countrylanguage), 984)
 })
+
+test_that('null connection loads cached table', {
+  import(query_table(conn = conn, name = 'city', query = 'SELECT * FROM city'))
+  expect_false(is.null(.GlobalEnv$city))
+  expect_equal(nrow(city), 4079)
+  
+  rm(city, envir = .GlobalEnv)
+  expect_true(is.null(.GlobalEnv$city))
+
+  import(query_table(conn = NULL, name = 'city', query = 'SELECT * FROM city'))
+  expect_equal(nrow(city), 4079)
+})
+
+test_that('parametric table does not barf with null connection', {
+  table_ref <- pquery_table(
+    NULL,
+    name = 'city',
+    'SELECT * FROM ?table',
+    query_parameters = l(table = 'city')
+  )
+  
+  # But it will barf if you try to materialize it.
+  result <- tryCatch(
+    materialize(table_ref),
+    error = function(err) 'oops, I barfed!'
+  )
+  
+  expect_equal(result, 'oops, I barfed!')
+})

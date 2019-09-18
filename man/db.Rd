@@ -7,7 +7,7 @@
 \alias{cached_table}
 \alias{db_table}
 \alias{query_table}
-\alias{parametric_reference}
+\alias{pquery_table}
 \alias{import_all}
 \alias{table_references}
 \title{Inspect and import/cache database tables as tibbles.}
@@ -16,7 +16,7 @@ materialize(reference, ...)
 
 size(reference, ...)
 
-import(reference, ignore_cache = FALSE)
+import(reference, ignore_cache = FALSE, global = TRUE)
 
 cached_table(name)
 
@@ -24,7 +24,7 @@ db_table(conn, name)
 
 query_table(conn, query, name)
 
-parametric_reference(conn, query, name, query_parameters)
+pquery_table(conn, query, name, query_parameters)
 
 import_all(...)
 
@@ -37,7 +37,9 @@ table_references(ref_type, ref_parameters = l(), ...)
 `db_table` and `cached_table`, this has to match the name of the table in 
 the database and/or the name of the cache file.}
 
-\item{conn}{a database connection created with `DBI::dbConnect`.}
+\item{conn}{a database connection created with `DBI::dbConnect`. Can be 
+set to `NULL` if the user is sure there is a cached version
+on disk and the reference is being used with `import`.}
 
 \item{query}{a string containing a (possibly parametric) SQL query.}
 
@@ -62,7 +64,7 @@ tibbles and caching them into disk for future use.
 \item{`query_table()`}{lazy reference to a query result which can
    be read into memory as a tibble and cached into disk.}
    
-   \item{`parametric_table()`}{same as `query_table()`, but taking a
+   \item{`pquery_table()`}{same as `query_table()`, but taking a
    parametric query and a list of named query parameters.}
    
    \item{`cached_table()`}{lazy reference to a table which has been
@@ -81,8 +83,8 @@ tibbles and caching them into disk for future use.
    \item{`import()`}{materializes a lazy reference into an actual tibble
    by reading from the local cache, or calling `materialize()` and then 
    caching results if nothing is cached. The resulting tible will be 
-   automatically bound to a variable with the table's `name` in the parent
-   environment.}
+   automatically bound to a variable with the table's `name` in the global
+   or parent environment.}
    
    \item{`import_all()`}{utility function. Equivalent to looping through a
    set of lazy references and calling import in each.}

@@ -10,7 +10,7 @@
 #'    \item{`query_table()`}{lazy reference to a query result which can
 #'    be read into memory as a tibble and cached into disk.}
 #'    
-#'    \item{`parametric_table()`}{same as `query_table()`, but taking a
+#'    \item{`pquery_table()`}{same as `query_table()`, but taking a
 #'    parametric query and a list of named query parameters.}
 #'    
 #'    \item{`cached_table()`}{lazy reference to a table which has been
@@ -29,8 +29,8 @@
 #'    \item{`import()`}{materializes a lazy reference into an actual tibble
 #'    by reading from the local cache, or calling `materialize()` and then 
 #'    caching results if nothing is cached. The resulting tible will be 
-#'    automatically bound to a variable with the table's `name` in the parent
-#'    environment.}
+#'    automatically bound to a variable with the table's `name` in the global
+#'    or parent environment.}
 #'    
 #'    \item{`import_all()`}{utility function. Equivalent to looping through a
 #'    set of lazy references and calling import in each.}
@@ -45,7 +45,9 @@
 #'     `db_table` and `cached_table`, this has to match the name of the table in 
 #'     the database and/or the name of the cache file.
 #' 
-#' @param conn a database connection created with `DBI::dbConnect`.
+#' @param conn a database connection created with `DBI::dbConnect`. Can be 
+#'        set to `NULL` if the user is sure there is a cached version
+#'        on disk and the reference is being used with `import`.
 #' 
 #' @param query a string containing a (possibly parametric) SQL query.
 #' 
@@ -70,7 +72,7 @@ size <- function(reference, ...)
 
 #' @rdname db
 #' @export
-import <- function(reference, ignore_cache = FALSE) {
+import <- function(reference, ignore_cache = FALSE, global = TRUE) {
   cached <- cache_file(reference)
   if (file.exists(cached) & !ignore_cache) {
     message(sprintf('- read %s from local cache', cached))
@@ -80,7 +82,7 @@ import <- function(reference, ignore_cache = FALSE) {
     data <- materialize(reference) %>% collect()
     write_rds(data, cached, 'gz')
   }
-  env <- parent.frame(n = length(sys.parents()))
+  env <- if(global) sys.frame(which = 0) else parent.frame(n = 1)
   env[[reference$name]] <- data
 }
 
@@ -150,18 +152,31 @@ size.db_table <- function(reference) {
 #' @rdname db
 #' @export
 query_table <- function(conn, query, name) {
-  obj <- list(name = name, conn = conn)
-  obj$query <- query
+  obj <- list(name = name, conn = conn, query = query)
   class(obj) <- c('query_table', class(obj))
   obj
 }
 
 #' @rdname db
 #' @export
-parametric_reference <- function(conn, query, name, query_parameters) {
+pquery_table <- function(conn, query, name, query_parameters) {
+  obj <- list(name = name, 
+              query = query, 
+              conn = conn, 
+              query_parameters = query_parameters)
+  class(obj) <- c('pquery_table', class(obj))
+  obj
+}
+
+#' @export
+materialize.pquery_table <- function(reference) {
   query_table(
     conn,
-    sqlInterpolate(conn, query, .dots = query_parameters),
+    sqlInterpolate(
+      reference$conn, 
+      reference$query, 
+      .dots = reference$query_parameters
+    ),
     name
   )
 }

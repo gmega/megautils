@@ -1,7 +1,7 @@
 Package: megautils
 Type: Package
 Title: Collection of Utility Functions
-Version: 0.2.0
+Version: 0.3.0
 Author: Giuliano Mega
 Maintainer: Giuliano Mega <giuliano.mega@gmail.com>
 Description: A heterogeneous collection of utility functions that I 
@@ -13,9 +13,9 @@ Collate:
     'datetime.R'
     'db.R'
     'dplyr-extras.R'
-    'dplyr-lists.R'
     'shortcuts.R'
     'importer.R'
+    'lists.R'
     'misc.R'
     'packages.R'
     'read_all.R'

@@ -1,3 +1,4 @@
+
 #' @export
 select_opt <- function(.data, ...) {
   exprs <- rlang::exprs(...)
@@ -16,6 +17,19 @@ select_opt <- function(.data, ...) {
   .data %>% select(
     !!!mandatory, intersect(optional, names(.data))
   )
+}
+
+#' @export
+filter.list <- function(X, pred) {
+  f <- function(.) { }
+  body(f) <- substitute(pred)
+  Filter(X, f = f)
+}
+
+#' @export
+pull.list <- function(X, what) {
+  what <- deparse(substitute(what))
+  sapply(X, function(x) { x[[what]] })
 }
 
 #' @export
