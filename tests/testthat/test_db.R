@@ -58,6 +58,18 @@ test_that('table_references works', {
   expect_equal(nrow(countrylanguage), 984)
 })
 
+test_that('pquery_table works', {
+  table <- pquery_table(
+    conn = conn, 
+    name = 'city', 
+    query = 'SELECT * FROM city WHERE CountryCode = ?country', 
+    l(country = 'CHN')
+  ) %>% materialize() %>% collect()
+  
+  expect_equal(nrow(table), 363)
+  expect_equal(ncol(table), 5)
+})
+
 test_that('null connection loads cached table on import', {
   import(query_table(conn = conn, name = 'city', query = 'SELECT * FROM city'))
   expect_false(is.null(.GlobalEnv$city))

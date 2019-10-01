@@ -181,14 +181,14 @@ pquery_table <- function(conn, query, name, query_parameters) {
 #' @export
 materialize.pquery_table <- function(reference) {
   query_table(
-    conn,
-    sqlInterpolate(
+    conn = reference$conn,
+    query = sqlInterpolate(
       reference$conn, 
       reference$query, 
       .dots = reference$query_parameters
     ),
-    name
-  )
+    name = reference$name
+  ) %>% materialize()
 }
 
 #' @export
