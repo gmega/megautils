@@ -54,8 +54,10 @@ less commonly, `parametric_table` or `cached_table`.}
 with each call.}
 }
 \description{
-Utility functions for reading remote database tables (using SQL) into 
-tibbles and caching them into disk for future use.
+Utility functions for reading remote tabular data into tibbles and caching 
+them into disk for future use. If your data is stored in 
+\href{https://cloud.google.com/storage}{Google Cloud Storage}, see 
+\link{gcs_data}.
 }
 \details{
 \describe{

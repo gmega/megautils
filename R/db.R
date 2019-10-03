@@ -1,7 +1,9 @@
 #' Inspect and import/cache database tables as tibbles.
 #'
-#' Utility functions for reading remote database tables (using SQL) into 
-#' tibbles and caching them into disk for future use.
+#' Utility functions for reading remote tabular data into tibbles and caching 
+#' them into disk for future use. If your data is stored in 
+#' \href{https://cloud.google.com/storage}{Google Cloud Storage}, see 
+#' \link{gcs_data}.
 #'
 #' \describe{
 #'    \item{`db_table()`}{lazy reference to a database table which can 
@@ -83,21 +85,25 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
     return()
   }
   
-  cached <- cache_file(reference)
-  if (file.exists(cached) & !ignore_cache) {
-    message(sprintf('- read %s from local cache', cached))
+  entry <- cache_file(reference)
+  if (file.exists(entry) & !ignore_cache) {
+    message(sprintf('- read %s from local cache', reference$name))
     data <- materialize.cached_table(reference)
   } else {
-    message(sprintf('- fetch %s from remote source', cached))
-    data <- materialize(reference) %>% collect()
-    write_rds(data, cached, 'gz')
+    message(sprintf('- fetch %s from remote source', reference$name))
+    data <- materialize(reference)
+    if (!('data.frame' %in% class(data))) {
+      stop(sprintf('Import can only deal with data.frame-like objects, not %s.', 
+                   do.call(paste, as.list(class(data)))))
+    }
+    write_rds(data, entry, 'gz')
   }
   
   target_env[[reference$name]] <- data
 }
 
 cache_file <- function(reference) {
-  sprintf('%s.rds', reference$name)
+  cache_entry(sprintf('%s.rds', reference$name))
 }
 
 #' @rdname db
@@ -140,7 +146,7 @@ db_table <- function(conn, name) {
 
 #' @export
 materialize.db_table <- function(reference) {
-  tbl(reference$conn, reference$name)
+  tbl(reference$conn, reference$name) %>% collect()
 }
 
 #' @export
@@ -193,7 +199,7 @@ materialize.pquery_table <- function(reference) {
 
 #' @export
 materialize.query_table <- function(reference) {
-  tbl(reference$conn, sql(reference$query))
+  tbl(reference$conn, sql(reference$query)) %>% collect()
 }
 
 #' @rdname db

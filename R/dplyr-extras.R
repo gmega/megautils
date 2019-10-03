@@ -1,4 +1,3 @@
-
 #' @export
 select_opt <- function(.data, ...) {
   exprs <- rlang::exprs(...)
