@@ -13,7 +13,7 @@ gcs_data <- function(bucket, path, loader) {
       object_name = path,
       bucket = bucket,
       saveToDisk = tmp)) {
-      stop('Failed to download %s from bucket %s.', path, bucket)
+      stop(g('Failed to download {path} from bucket {bucket}.'))
     }
     loader(tmp)
   }, finally = {

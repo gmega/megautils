@@ -15,7 +15,7 @@ cache_folder <- function() {
   }
   
   if (!dir.exists(.cache_folder)) {
-    message(sprintf('Creating cache folder %s.', .cache_folder))
+    message(g('Creating cache folder {.cache_folder}.'))
     dir.create(.cache_folder)
   }
   

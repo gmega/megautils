@@ -8,7 +8,7 @@
 #' @seealso
 #' \code{\link{diff}} for valid parameters to \code{diff_na}.
 #'
-#' @example
+#' @examples
 #'
 #' x <- c(2, 4, 8, NA, NA, 16, 32)
 #'

@@ -18,14 +18,14 @@
 
   import = function(script) {
     for(base in self$lookup) {
-      path <- file.path(base, sprintf('%s.R', script))
+      path <- file.path(base, g('{script}.R'))
       if(file.exists(path)) {
         source(path)
         return()
       }
     }
 
-    stop(sprintf('%s not found in any lookup path.', script))
+    stop(g('{script} not found in any lookup path.'))
   }
 ))
 

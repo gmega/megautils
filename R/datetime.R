@@ -10,10 +10,9 @@ weekday_find_closest <- function(weekday, current = NULL) {
 weekday_index <- function(weekday) {
   index <- which(str_to_lower(weekday) == weekday_all_labels())
   if (length(index) == 0) {
-    stop(sprintf(
-      'Invalid weekday %s. Valid week days are: %s.',
-      weekday,
-      str_flatten(weekday_all_labels(), ', ')
+    stop(g(
+      'Invalid weekday {weekday}.', 
+      "Valid week days are: {str_flatten(weekday_all_labels(), ', ')}."
     ))
   }
   index - 1

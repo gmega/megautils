@@ -87,14 +87,14 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
   
   entry <- cache_file(reference)
   if (file.exists(entry) & !ignore_cache) {
-    message(sprintf('- read %s from local cache', reference$name))
+    message(g('- read {reference$name} from local cache'))
     data <- materialize.cached_table(reference)
   } else {
-    message(sprintf('- fetch %s from remote source', reference$name))
+    message(g('- fetch %{reference$name} from remote source'))
     data <- materialize(reference)
     if (!('data.frame' %in% class(data))) {
-      stop(sprintf('Import can only deal with data.frame-like objects, not %s.', 
-                   do.call(paste, as.list(class(data)))))
+      stop(g('Import can only deal with data.frame-like objects,', 
+             'not {do.call(paste, as.list(class(data)))}.')) 
     }
     write_rds(data, entry, 'gz')
   }
@@ -103,7 +103,7 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
 }
 
 cache_file <- function(reference) {
-  cache_entry(sprintf('%s.rds', reference$name))
+  cache_entry(g('{reference$name}.rds'))
 }
 
 #' @rdname db
@@ -118,22 +118,20 @@ cached_table <- function(name) {
 materialize.cached_table <- function(reference, ...) {
   cached <- cache_file(reference)
   if (!file.exists(cached)) {
-    stop(sprintf('Nothing found on cache for table %s', reference$name))
+    stop(g('Nothing found on cache for table {reference$name}'))
   }
   read_rds(cached)
 }
 
 #' @export
 size.cached_table <- function(reference, ...) {
-  stop(sprintf('Size is not supported for cached tables. Materialize them
-               and then inspect the size.', reference$name))
+  stop(g('Size is not supported for cached tables.',
+         'Materialize them and then inspect the size.'))
 }
 
 #' @export
 print.cached_table <- function(reference) {
-  sprintf(
-    'Named reference to %s', reference$name
-  )
+  g('Named reference to {reference$name}')
 }
 
 #' @rdname db
