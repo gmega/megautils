@@ -1,0 +1,9 @@
+language: r
+r:
+  - release
+  
+services:
+  - mysql
+  
+before_install:
+  - gunzip ./inst/testdata/world.sql.gz --stdout | mysql -u root --default-character-set=utf8
