@@ -12,6 +12,17 @@ of the same length as the original (beginning with a NA),
 and does not propagates NAs. \code{diff_na} takes the same
 parameters as \code{\link{diff}}.
 }
+\examples{
+
+x <- c(2, 4, 8, NA, NA, 16, 32)
+
+# will result in 'c(2, 2, 6, NA, NA, NA, 16)'
+diff(x)
+
+# will result in 'c(NA, 2, 2, 6, NA, NA, 8, 16)'
+diff_na(x)
+
+}
 \seealso{
 \code{\link{diff}} for valid parameters to \code{diff_na}.
 }
