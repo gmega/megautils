@@ -19,6 +19,7 @@ Cache <- R6::R6Class("Cache", l(
   },
   
   exists = function(entry) {
+    print(g('check {self$entry_path(entry)}: {file.exists(self$entry_path(entry))}'))
     file.exists(self$entry_path(entry))
   },
   

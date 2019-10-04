@@ -1,3 +1,5 @@
+#' @include globals.R
+#' 
 #' Inspect and import/cache database tables as tibbles.
 #'
 #' Utility functions for reading remote tabular data into tibbles and caching 
@@ -72,7 +74,7 @@ materialize <- function(reference, ...)
 size <- function(reference, ...)
   UseMethod('size', reference)
 
-table_cache <- Cache$new(cache_folder = 'table_cache')
+globals$table_cache <- Cache$new(cache_folder = 'table_cache')
 
 #' @rdname db
 #' @export
@@ -87,6 +89,7 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
     return()
   }
   
+  table_cache <- globals$table_cache
   entry <- cache_entry(reference)
   if (table_cache$exists(entry) & !ignore_cache) {
     message(g('- read <{reference$name}> from local cache'))
@@ -120,10 +123,10 @@ cached_table <- function(name) {
 #' @export
 materialize.cached_table <- function(reference, ...) {
   entry <- cache_entry(reference)
-  if (!table_cache$exists(entry)) {
+  if (!globals$table_cache$exists(entry)) {
     stop(g('Nothing found on cache for table {reference$name}'))
   }
-  read_rds(table_cache$entry_path(entry))
+  read_rds(globals$table_cache$entry_path(entry))
 }
 
 #' @export

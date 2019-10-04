@@ -13,13 +13,13 @@ setup({
     password = '',
     encoding = 'utf8'
   )
-  table_cache <<- Cache$new(cache_folder = 'test-tables')
+  globals$table_cache <- Cache$new(cache_folder = 'test-tables')
 })
 
 teardown({
   tryCatch({
     DBI::dbDisconnect(conn)
-    table_cache$clear()
+    globals$table_cache$clear()
   }, error = function(.) NULL)
 })
 
@@ -30,7 +30,7 @@ test_that('db_table gets right size', {
 })
 
 test_that('db_table pulls whole table', {
-  table_cache$clear()
+  globals$table_cache$clear()
   
   table <- db_table(name = 'city', conn = conn) %>% 
     materialize() %>% 
@@ -40,15 +40,14 @@ test_that('db_table pulls whole table', {
   expect_equal(nrow(table), 4079)
   expect_equal(ncol(table), 5)
   
-  # Takes two random rows without encoding issues to check.
-  expect_equal(table[4,]$Name, 'Aachen')
-  expect_equal(table[3057,]$Name, 'Sahiwal')
+  expect_equal(table[1,]$Name, 'A Coruña (La Coruña)')
+  expect_equal(table[3057,]$Name, 'Samsun')
 })
   
 test_that('caching works', {
-  table_cache$clear()
+  globals$table_cache$clear()
   
-  import(db_table(name = 'city', conn = conn))
+  import(db_table(name = 'city', conn = conn), global = FALSE)
   expect_equal(nrow(city), 4079)
   expect_equal(ncol(city), 5)
   
