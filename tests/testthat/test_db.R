@@ -1,15 +1,27 @@
 context('db tables')
 library(megautils)
 
-conn <- DBI::dbConnect(
-  RMySQL::MySQL(),
-  host = '127.0.0.1',
-  port = 3306,
-  user = 'root',
-  db = 'world', 
-  password = '',
-  encoding = 'latin1'
-)
+conn <- NULL
+
+setup({
+  conn <<- DBI::dbConnect(
+    RMySQL::MySQL(),
+    host = '127.0.0.1',
+    port = 3306,
+    user = 'root',
+    db = 'world', 
+    password = '',
+    encoding = 'utf8'
+  )
+  table_cache <<- Cache$new(cache_folder = 'test-tables')
+})
+
+teardown({
+  tryCatch({
+    DBI::dbDisconnect(conn)
+    table_cache$clear()
+  }, error = function(.) NULL)
+})
 
 test_that('db_table gets right size', {
   info <- size(db_table(name = 'city', conn = conn))
@@ -18,6 +30,8 @@ test_that('db_table gets right size', {
 })
 
 test_that('db_table pulls whole table', {
+  table_cache$clear()
+  
   table <- db_table(name = 'city', conn = conn) %>% 
     materialize() %>% 
     collect() %>%
@@ -27,11 +41,13 @@ test_that('db_table pulls whole table', {
   expect_equal(ncol(table), 5)
   
   # Takes two random rows without encoding issues to check.
-  expect_equal(table[3,]$Name, 'Aachen')
-  expect_equal(table[3050,]$Name, 'Sahiwal')
+  expect_equal(table[4,]$Name, 'Aachen')
+  expect_equal(table[3057,]$Name, 'Sahiwal')
 })
-
+  
 test_that('caching works', {
+  table_cache$clear()
+  
   import(db_table(name = 'city', conn = conn))
   expect_equal(nrow(city), 4079)
   expect_equal(ncol(city), 5)

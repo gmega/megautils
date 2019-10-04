@@ -23,13 +23,16 @@ gcs_data <- function(bucket, path, loader) {
 
 #' @rdname gcs_data
 #' @export
-gcs_table <- function(bucket, path, loader) {
+gcs_table <- function(bucket, path, loader, name = NULL) {
+  if (is.null(name)) {
+    # FIXME not sure using basename is the way to go.
+    name <- gsub(pattern = '\\.[^\\.]+$', replacement = '', x = basename(path))
+  }
   obj <- list(
     bucket = bucket, 
     path = path, 
     loader = loader, 
-    # FIXME not sure this is very portable.
-    name = basename(path)
+    name = name
   )
   class(obj) <- c('gcs_table', class(obj))
   obj
@@ -43,7 +46,7 @@ materialize.gcs_table <- function(reference) {
 
 #' @rdname gcs_data
 #' @export
-gcs_auth <- function() {
-  token <- gargle::token_fetch(scopes = AUTH_SCOPES)
+gcs_auth <- function(...) {
+  token <- gargle::token_fetch(scopes = AUTH_SCOPES, ...)
   googleAuthR::gar_auth(scopes = AUTH_SCOPES, token)
 }

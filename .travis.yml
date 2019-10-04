@@ -6,4 +6,4 @@ services:
   - mysql
   
 before_install:
-  - gunzip ./inst/testdata/world.sql.gz --stdout | mysql -u root --default-character-set=utf8
+  - gunzip ./inst/testdata/world-utf8.sql.gz --stdout | mysql -u root --default-character-set=utf8 

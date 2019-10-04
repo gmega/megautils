@@ -43,6 +43,9 @@ given folder.
 }
 \examples{
 
+# So we can use \%>\% syntax.
+library(magrittr)
+
 # Folder with two files
 path <- system.file('extdata', 'read_all', package = 'megautils')
 

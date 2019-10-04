@@ -1,41 +1,30 @@
-DEFAULT_CACHE_FOLDER <- 'megautils'
+#' @include shortcuts.R
 
-.cache_folder <- NULL
+ROOT_CACHE_FOLDER <- file.path(rappdirs::user_cache_dir(), 'megautils')
 
-#' @export
-set_cache_folder <- function(cache_folder) {
-  .cache_folder <<- cache_folder
-}
-
-#' @export
-cache_folder <- function() {
-  if (is.null(.cache_folder)) {
-    set_cache_folder(
-      file.path(rappdirs::user_cache_dir(), DEFAULT_CACHE_FOLDER))
-  }
+Cache <- R6::R6Class("Cache", l(
+  cache_folder = NULL,
   
-  if (!dir.exists(.cache_folder)) {
-    message(g('Creating cache folder {.cache_folder}.'))
-    dir.create(.cache_folder)
-  }
+  initialize = function(cache_folder = '') {
+    cache_folder <- file.path(ROOT_CACHE_FOLDER, cache_folder)
+    if (!dir.exists(cache_folder)) {
+      message(g('Creating cache folder {cache_folder}.'))
+      dir.create(cache_folder)
+    }
+    self$cache_folder <- cache_folder
+  },
   
-  .cache_folder
-}
-
-#' @export
-cache_entry <- function(entry) {
-  file.path(cache_folder(), entry)
-}
-
-#' @export
-is_cached <- function(filename) {
-  file.exists(cache_entry(filename))
-}
-
-#' @export
-clear_entry <- function(entry) {
-  entry <- cache_entry(entry)
-  if (file.exists(entry)) {
-    file.remove(entry)
+  entry_path = function(entry) {
+    file.path(self$cache_folder, entry)
+  },
+  
+  exists = function(entry) {
+    file.exists(self$entry_path(entry))
+  },
+  
+  clear = function() {
+    for (entry in list.files(path = self$cache_folder, full.names = TRUE)) {
+      file.remove(entry)
+    }
   }
-}
+))

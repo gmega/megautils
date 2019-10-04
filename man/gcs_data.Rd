@@ -9,11 +9,11 @@
 \usage{
 gcs_data(bucket, path, loader)
 
-gcs_table(bucket, path, loader)
+gcs_table(bucket, path, loader, name = NULL)
 
 \method{materialize}{gcs_table}(reference)
 
-gcs_auth()
+gcs_auth(...)
 }
 \description{
 Helper functions for loading datasets from Google Cloud Storage. In case of

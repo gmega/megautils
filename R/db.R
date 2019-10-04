@@ -72,6 +72,8 @@ materialize <- function(reference, ...)
 size <- function(reference, ...)
   UseMethod('size', reference)
 
+table_cache <- Cache$new(cache_folder = 'table_cache')
+
 #' @rdname db
 #' @export
 import <- function(reference, ignore_cache = FALSE, global = TRUE, 
@@ -85,25 +87,26 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
     return()
   }
   
-  entry <- cache_file(reference)
-  if (file.exists(entry) & !ignore_cache) {
-    message(g('- read {reference$name} from local cache'))
+  entry <- cache_entry(reference)
+  if (table_cache$exists(entry) & !ignore_cache) {
+    message(g('- read <{reference$name}> from local cache'))
     data <- materialize.cached_table(reference)
   } else {
-    message(g('- fetch %{reference$name} from remote source'))
+    message(g('- fetch <{reference$name}> from remote source'))
     data <- materialize(reference)
     if (!('data.frame' %in% class(data))) {
       stop(g('Import can only deal with data.frame-like objects,', 
              'not {do.call(paste, as.list(class(data)))}.')) 
     }
-    write_rds(data, entry, 'gz')
+    print(table_cache$entry_path(entry))
+    write_rds(data, path = table_cache$entry_path(entry), compress = 'gz')
   }
   
   target_env[[reference$name]] <- data
 }
 
-cache_file <- function(reference) {
-  cache_entry(g('{reference$name}.rds'))
+cache_entry <- function(reference) {
+  g('{reference$name}.rds')
 }
 
 #' @rdname db
@@ -116,11 +119,11 @@ cached_table <- function(name) {
 
 #' @export
 materialize.cached_table <- function(reference, ...) {
-  cached <- cache_file(reference)
-  if (!file.exists(cached)) {
+  entry <- cache_entry(reference)
+  if (!table_cache$exists(entry)) {
     stop(g('Nothing found on cache for table {reference$name}'))
   }
-  read_rds(cached)
+  read_rds(table_cache$entry_path(entry))
 }
 
 #' @export
