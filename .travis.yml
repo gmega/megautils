@@ -13,3 +13,7 @@ services:
   
 before_install:
   - gunzip ./inst/testdata/world-utf8.sql.gz --stdout | mysql -u root --default-character-set=utf8 
+  
+env:
+  global:
+    - _R_CHECK_TESTS_NLINES_=0
