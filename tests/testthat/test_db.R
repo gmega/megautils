@@ -31,6 +31,7 @@ test_that('db_table gets right size', {
 })
 
 test_that('db_table pulls whole table', {
+  stop(g('cache folder is {globals$table_cache$cache_folder}'))
   globals$table_cache$clear()
   
   table <- db_table(name = 'city', conn = conn) %>% 
