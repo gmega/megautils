@@ -9,7 +9,10 @@ Cache <- R6::R6Class("Cache", l(
     cache_folder <- file.path(ROOT_CACHE_FOLDER, cache_folder)
     if (!dir.exists(cache_folder)) {
       message(g('Creating cache folder {cache_folder}.'))
-      dir.create(cache_folder)
+      if (!dir.create(cache_folder)) {
+        stop(g('Could not initialize cache at {cache_folder}.', 
+               'Check permissions.'))
+      }
     }
     self$cache_folder <- cache_folder
   },
@@ -19,7 +22,6 @@ Cache <- R6::R6Class("Cache", l(
   },
   
   exists = function(entry) {
-    print(g('check {self$entry_path(entry)}: {file.exists(self$entry_path(entry))}'))
     file.exists(self$entry_path(entry))
   },
   

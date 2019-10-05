@@ -1,3 +1,5 @@
+#' @include shortcuts.R
+
 #' Lagged Differences
 #'
 #' A version of \code{\link{diff}} which returns a vector
@@ -31,4 +33,9 @@ order_factor <- function(X, col) {
   col <- eval(substitute(select_vars(cols, col)))
   X[[col]] <- factor(X[[col]], levels = X[[col]])
   X
+}
+
+#' @export
+paste_vec <- function(data, sep = '') {
+  do.call(paste, c(l(sep = sep), data))
 }
