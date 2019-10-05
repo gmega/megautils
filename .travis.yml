@@ -1,6 +1,7 @@
 language: r
 cache: packages
 latex: false
+sudo: false
 
 warnings_are_errors: false
 r_check_args: --no-manual
