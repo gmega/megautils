@@ -1,5 +1,4 @@
-context('gcs dataset utils')
-library(megautils)
+context('gcs')
 
 setup({
   # We'll eventually need a service key to run these tests on travis.

@@ -9,7 +9,18 @@ Description: A heterogeneous collection of utility functions that I
 Encoding: UTF-8
 LazyData: true
 License: BSD_3_clause
-Imports: dplyr (>= 0.7.4), purrr (>= 0.2.4), readr (>= 1.1.1), tidyr (>= 0.7.2), R6 (>= 2.2.2), stringr (>= 1.2.0), lubridate (>= 1.7.4), glue (>= 1.3.1), DBI (>= 1.0.0), googleCloudStorageR (>= 0.5.1), rappdirs (>= 0.3.1), RMySQL (>= 0.10.17)
+Imports: 
+    dplyr (>= 0.8.3), 
+    purrr (>= 0.3.2), 
+    readr (>= 1.1.1), 
+    tidyr (>= 0.7.2), 
+    R6 (>= 2.2.2), 
+    stringr (>= 1.2.0), 
+    lubridate (>= 1.7.4), 
+    glue (>= 1.3.1), 
+    googleCloudStorageR (>= 0.5.1), 
+    rappdirs (>= 0.3.1), 
+    dbplyr (>= 1.4.2)
 Collate: 
     'shortcuts.R'
     'cache.R'
@@ -25,4 +36,6 @@ Collate:
     'read_all.R'
 RoxygenNote: 6.1.1
 Suggests: 
-    testthat
+    testthat,
+    RMySQL (>= 0.10.17), 
+    DBI (>= 1.0.0)

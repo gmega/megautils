@@ -1,5 +1,6 @@
-context('db tables')
-library(megautils)
+context('db')
+
+library(DBI)
 
 conn <- NULL
 
