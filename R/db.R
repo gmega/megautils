@@ -101,28 +101,10 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
       stop(g('Import can only deal with data.frame-like objects,', 
              'not {do.call(paste, as.list(class(data)))}.')) 
     }
-    debug_info(entry)
     write_rds(data, path = table_cache$entry_path(entry), compress = 'gz')
   }
   
   target_env[[reference$name]] <- data
-}
-
-debug_info <- function(entry) {
-  write_path <- globals$table_cache$entry_path(entry)
-  cache_folder <- globals$table_cache$cache_folder
-  gprint(
-    'Cache Folder is {cache_folder}\n',
-    'Cache Folder exists is {file.exists(cache_folder)}\n',
-    'Cache entry is {write_path}\n')
-  
-  gprint('Cache Folder info {paste_vec(file.info(cache_folder), sep = " ")}')
-  gprint('Cache Folder access {file.access(cache_folder)}')
-  gprint('Cache Folder contents {paste_vec(list.files(cache_folder), sep = " ")}')
-  
-  gprint('Write attempt to {write_path}\n')
-  write_lines(c('a', 'b', 'c'), write_path)
-  gprint('Written file exists: {file.exists(write_path)}\n')
 }
 
 cache_entry <- function(reference) {
