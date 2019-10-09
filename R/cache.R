@@ -1,4 +1,5 @@
 #' @include shortcuts.R
+#' @include lists.R
 
 ROOT_CACHE_FOLDER <- file.path(rappdirs::user_cache_dir(), 'megautils')
 

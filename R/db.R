@@ -1,9 +1,7 @@
-#' @include globals.R
-#' 
-#' Inspect and import/cache database tables as tibbles.
+#' Inspect and import/cache database tables as \link[tibble]{tibble}s.
 #'
-#' Utility functions for reading remote tabular data into tibbles and caching 
-#' them into disk for future use. If your data is stored in 
+#' Utility functions for reading remote tabular data into \link[tibble]{tibble}s 
+#' and caching them into disk for future use. If your data is stored in 
 #' \href{https://cloud.google.com/storage}{Google Cloud Storage}, see 
 #' \link{gcs_data}.
 #'
@@ -22,6 +20,9 @@
 #'    be read without setting up a database connection, which is required
 #'    by all other reference types.}
 #'    
+#'    \item{`gcs_table()`}{lazy reference to tabular data stored into
+#'    Google Cloud Storage.}
+#'    
 #'    \item{`materialize()`}{materializes a lazy reference into an actual
 #'    tibble by accessing the remote database. This function never reads
 #'    or writes to the local cache.}
@@ -31,10 +32,10 @@
 #'    database table before deciding to download it.}
 #'    
 #'    \item{`import()`}{materializes a lazy reference into an actual tibble
-#'    by reading from the local cache, or calling `materialize()` and then 
-#'    caching results if nothing is cached. The resulting tible will be 
+#'    by either _i)_ reading from the local cache, or _ii)_ calling `materialize()` 
+#'    and then caching results if nothing is cached yet. The resulting tibble will be 
 #'    automatically bound to a variable with the table's `name` in the global
-#'    or parent environment.}
+#'    environment.}
 #'    
 #'    \item{`import_all()`}{utility function. Equivalent to looping through a
 #'    set of lazy references and calling import in each.}
@@ -46,8 +47,8 @@
 #' @param reference a lazy table reference.
 #' 
 #' @param name a string containing the name of the lazy table reference. For
-#'     `db_table` and `cached_table`, this has to match the name of the table in 
-#'     the database and/or the name of the cache file.
+#'     `db_table`, this has to match the name of the table in 
+#'     the database.
 #' 
 #' @param conn a database connection created with `DBI::dbConnect`. Can be 
 #'        set to `NULL` if the user is sure there is a cached version
@@ -56,7 +57,18 @@
 #' @param query a string containing a (possibly parametric) SQL query.
 #' 
 #' @param query_parameters a list of named parameters (e.g. 
-#' `list(par1='value1', par2='value2')` to be substituted into the query.
+#' `list(par1 = 'value1', par2 = 'value2')` to be substituted into the query.
+#' 
+#' @param ignore_cache if set to `TRUE`, forces \link{import} to download data
+#'  from the remote source again, even if it's already cached. Defaults to `FALSE`.
+#'  
+#' @param global if set to `FALSE`, causes \link{import} to bind the table 
+#'  to a reference in the calling environment instead of the global environment.
+#'  Defaults to `TRUE`.
+#'  
+#' @param overwrite if set to `TRUE`, causes \link{import} to act as a noop if
+#'  there is already a binding with name `name` in the target environment. Useful
+#'  for when the table is large and has already been loaded with .RData.
 #'  
 #' @param ref_parameters a list of named parameters to be passed to `ref_type`
 #'  with each call.
@@ -64,6 +76,7 @@
 #' @param ref_type a lazy reference type. Either `db_table`, `cached_table`, or,
 #' less commonly, `parametric_table` or `cached_table`.
 #'
+#' @include globals.R
 #' @rdname db
 #' @export
 materialize <- function(reference, ...)
