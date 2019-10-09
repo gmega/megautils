@@ -1,16 +1,17 @@
 Package: megautils
 Type: Package
 Title: Collection of Utility Functions
-Version: 0.3.1
+Version: 0.4.0
 Author: Giuliano Mega
 Maintainer: Giuliano Mega <giuliano.mega@gmail.com>
 Description: A heterogeneous collection of utility functions that I 
    use daily.
 Encoding: UTF-8
 LazyData: true
-License: BSD_3_clause
+License: BSD_3_clause + file LICENSE
 Imports: 
-    dplyr (>= 0.8.3), 
+    dplyr (>= 0.8.3),
+    magrittr (>= 1.5),
     purrr (>= 0.3.2), 
     readr (>= 1.1.1), 
     tidyr (>= 0.7.2), 
@@ -22,6 +23,7 @@ Imports:
     rappdirs (>= 0.3.1), 
     dbplyr (>= 1.4.2)
 Collate: 
+    'lists.R'
     'shortcuts.R'
     'cache.R'
     'datetime.R'
@@ -30,7 +32,6 @@ Collate:
     'dplyr-extras.R'
     'gcs.R'
     'importer.R'
-    'lists.R'
     'misc.R'
     'packages.R'
     'read_all.R'

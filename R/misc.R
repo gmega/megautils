@@ -35,7 +35,22 @@ order_factor <- function(X, col) {
   X
 }
 
+#' Concatenate a vector of strings 
+#' 
+#' `paste_vec` works the same as \link{paste}, but instead of taking arguments 
+#' directly (i.e. using `...`) it takes them as a vector. 
+#' 
+#' @examples 
+#' 
+#' data_vec <- c('hello', 'world')
+#' 
+#' # Same as do.call(paste, c(data_vec, list(sep = ' ')))
+#' paste_vec(data_vec, sep = ' ')
+#' 
 #' @export
-paste_vec <- function(data, sep = '') {
-  do.call(paste, c(l(sep = sep), data))
+paste_vec <- function(.dots, sep = '') {
+  do.call(paste, c(l(sep = sep), .dots))
 }
+
+#' @export
+gprint <- function(...) print(g(..., .envir = parent.frame()))

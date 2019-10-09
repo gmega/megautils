@@ -15,8 +15,47 @@ gcs_table(bucket, path, loader, name = NULL)
 
 gcs_auth(...)
 }
+\arguments{
+\item{bucket}{a valid GCS bucket name.}
+
+\item{path}{a path pointing to a dataset into the GCS bucket.}
+
+\item{loader}{a post-processing function (e.g. \link{read_csv}) which
+transforms the downloaded file into usable data. When used with
+\link[megautils]{import}, `loader` must return an object with S3 class 
+`data.frame` (e.g. a \link{tibble}).}
+}
 \description{
-Helper functions for loading datasets from Google Cloud Storage. In case of
+Helper functions for loading datasets from Google Cloud Storage (GCS). In case of
 tabular data, provides functions which can be used in concert with 
-\link{import}.
+\link[megautils]{import}.
+}
+\details{
+\describe{
+   \item{`gcs_data()`}{loads and parses data from GCS.}
+   \item{`gcs_table()`}{lazy table reference for using GCS objects with 
+         \link{import}.}
+   \item{`gcs_auth()`}{thin wrapper over \link{gargle} and \link{googleAuthR}
+         for faciliting user-base authentication.}
+}
+}
+\examples{
+
+\dontrun{
+   # The typical use case is importing datasets into notebooks locally.
+   gcs_auth(email = 'user@example.com')
+   
+   # Places the contents of cities.csv into global object "cities", and
+   # stores the data into local cache for future use.
+   import(
+      gcs_table(
+         bucket = 'somebucket.example.com',
+         path = '/datasets/cities.csv',
+         loader = read_csv
+      )
+   )
+ 
+}
+
+
 }
