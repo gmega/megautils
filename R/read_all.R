@@ -48,10 +48,6 @@
 #' @export
 read_all <- function(path, pattern = '*') {
   list(
-    paths = list.files(
-      path = path,
-      full.names = TRUE
-    ),
     fun = read_csv
   )
 }
@@ -60,6 +56,27 @@ read_all <- function(path, pattern = '*') {
 #' @export
 using <- function(.p, readfun, ...) {
   .p$fun <- purrr::partial(readfun, ...)
+  .p
+}
+
+#' @export
+from_fs <- function(.p, path, pattern = '*') {
+  .p$paths = list.files(
+    path = path,
+    full.names = TRUE
+  )
+  .p
+}
+
+#' @export
+from_gcs <- function(.p, bucket, prefix) {
+  .p$paths = googleCloudStorageR::gcs_list_objects(
+    bucket = bucket, prefix = prefix,
+  )$name
+  loader <- .p$fun
+  .p$fun = function(path) {
+    gcs_data(bucket = bucket, path = path, loader = loader)
+  }
   .p
 }
 
@@ -75,10 +92,10 @@ into_env <- function(.p, namefun = default_naming) {
 
 #' @rdname read_all
 #' @export
-into_tibble <- function(.p) {
+into_tibble <- function(.p, namefun = default_naming, namecol = 'origin') {
   lapply(
     .p$paths,
-    .p$fun
+    function(path) .p$fun(path) %>% mutate(!!namecol := namefun(path))
   ) %>% bind_rows
 }
 
