@@ -1,4 +1,5 @@
 AUTH_SCOPES = c('https://www.googleapis.com/auth/cloud-platform')
+GCS_PATH_SEPARATOR = '/'
 #' Access datasets from Google Cloud Storage
 #' 
 #' Helper functions for loading datasets from Google Cloud Storage (GCS). In case of
@@ -43,17 +44,17 @@ AUTH_SCOPES = c('https://www.googleapis.com/auth/cloud-platform')
 #' 
 #' @export
 gcs_data <- function(bucket, path, loader) {
-  tmp <- tempfile()
   tryCatch({
+    target <- file.path(tempdir(), gcs_basename(path))
     if(!googleCloudStorageR::gcs_get_object(
       object_name = path,
       bucket = bucket,
-      saveToDisk = tmp)) {
+      saveToDisk = target)) {
       stop(g('Failed to download {path} from bucket {bucket}.'))
     }
-    loader(tmp)
+    loader(target)
   }, finally = {
-    file.remove(tmp)  
+    file.remove(target)  
   })
 }
 
@@ -61,8 +62,7 @@ gcs_data <- function(bucket, path, loader) {
 #' @export
 gcs_table <- function(bucket, path, loader, name = NULL) {
   if (is.null(name)) {
-    # FIXME not sure using basename is the way to go.
-    name <- gsub(pattern = '\\.[^\\.]+$', replacement = '', x = basename(path))
+    name <- gsub(pattern = '\\.[^\\.]+$', replacement = '', x = gcs_basename(path))
   }
   obj <- list(
     bucket = bucket, 
@@ -85,4 +85,9 @@ materialize.gcs_table <- function(reference) {
 gcs_auth <- function(...) {
   token <- gargle::token_fetch(scopes = AUTH_SCOPES, ...)
   googleAuthR::gar_auth(scopes = AUTH_SCOPES, token)
+}
+
+gcs_basename <- function(path) {
+  parts <- stringr::str_split(path, GCS_PATH_SEPARATOR, simplify = TRUE)
+  parts[length(parts)]
 }

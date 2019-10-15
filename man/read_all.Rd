@@ -13,7 +13,7 @@ using(.p, readfun, ...)
 
 into_env(.p, namefun = default_naming)
 
-into_tibble(.p)
+into_tibble(.p, namefun = default_naming, namecol = "origin")
 }
 \arguments{
 \item{readfun}{the function which will be used to read each
