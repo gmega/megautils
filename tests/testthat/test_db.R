@@ -137,7 +137,10 @@ test_that('import post-processing works', {
       name = 'city', 
       conn = db_conn('test-db')
     ),
-    city %>% mutate(Name = tolower(Name)) %>% arrange(Name),
+    {
+      Encoding(city$Name) <- 'UTF-8'
+      city %>% mutate(Name = tolower(Name)) %>% arrange(Name)
+    },
     global = FALSE
   )
   
