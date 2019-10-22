@@ -2,14 +2,13 @@ context('db')
 
 library(DBI)
 
-conn <- NULL
-
 setup({
-  conn <<- DBI::dbConnect(
-    RMySQL::MySQL(),
+  db_register(
+    name = 'test-db',
+    driver = RMySQL::MySQL(),
+    user = 'root',
     host = '127.0.0.1',
     port = 3306,
-    user = 'root',
     db = 'world', 
     password = '',
     encoding = 'utf8'
@@ -19,13 +18,13 @@ setup({
 
 teardown({
   tryCatch({
-    DBI::dbDisconnect(conn)
+    db_close('test-db')
     globals$table_cache$clear()
   }, error = function(.) NULL)
 })
 
 test_that('db_table gets right size', {
-  info <- size(db_table(name = 'city', conn = conn))
+  info <- size(db_table(name = 'city', conn = db_conn('test-db')))
   expect_equal(info$tbl, 'city')
   expect_equal(info$size, 0.52)
 })
@@ -33,7 +32,7 @@ test_that('db_table gets right size', {
 test_that('db_table pulls whole table', {
   globals$table_cache$clear()
   
-  table <- db_table(name = 'city', conn = conn) %>% 
+  table <- db_table(name = 'city', conn = db_conn('test-db')) %>% 
     materialize() %>% 
     collect() 
   
@@ -43,6 +42,10 @@ test_that('db_table pulls whole table', {
 
   table <- table %>% arrange(Name)
   
+  expect_equal(table$Name[3], 'A Coruña (La Coruña)')
+  expect_equal(table$Name[500], 'Borås')
+  expect_equal(table$Name[4079], 'Zytomyr')
+  
   expect_equal(nrow(table), 4079)
   expect_equal(ncol(table), 5)
 })
@@ -50,7 +53,7 @@ test_that('db_table pulls whole table', {
 test_that('caching works', {
   globals$table_cache$clear()
   
-  import(db_table(name = 'city', conn = conn), global = FALSE)
+  import(db_table(name = 'city', conn = db_conn('test-db')), global = FALSE)
   expect_equal(nrow(city), 4079)
   expect_equal(ncol(city), 5)
   
@@ -64,7 +67,7 @@ test_that('table_references works', {
   import_all(
     table_references(
       ref_type = db_table,
-      ref_parameters = l(conn = conn),
+      ref_parameters = l(conn = db_conn('test-db')),
       'city',
       'country',
       'countrylanguage'
@@ -78,7 +81,7 @@ test_that('table_references works', {
 
 test_that('pquery_table works', {
   table <- pquery_table(
-    conn = conn, 
+    conn = db_conn('test-db'), 
     name = 'city', 
     query = 'SELECT * FROM city WHERE CountryCode = ?country', 
     l(country = 'CHN')
@@ -89,7 +92,8 @@ test_that('pquery_table works', {
 })
 
 test_that('null connection loads cached table on import', {
-  import(query_table(conn = conn, name = 'city', query = 'SELECT * FROM city'))
+  import(query_table(conn = db_conn('test-db'), 
+                     name = 'city', query = 'SELECT * FROM city'))
   expect_false(is.null(.GlobalEnv$city))
   expect_equal(nrow(city), 4079)
   
@@ -102,11 +106,11 @@ test_that('null connection loads cached table on import', {
 
 test_that('import does not overwrite existing objects if told so', {
   city <- 'please do not overwrite me!'
-  import(db_table(name = 'city', conn = conn), overwrite = FALSE, 
+  import(db_table(name = 'city', conn = db_conn('test-db')), overwrite = FALSE, 
          global = FALSE)
   expect_equal(city, 'please do not overwrite me!')
   
-  import(db_table(name = 'city', conn = conn), global = FALSE)
+  import(db_table(name = 'city', conn = db_conn('test-db')), global = FALSE)
   expect_equal(nrow(city), 4079)
 })
 
@@ -125,4 +129,19 @@ test_that('parametric table does not barf with null connection', {
   )
   
   expect_equal(result, 'oops, I barfed!')
+})
+
+test_that('import post-processing works', {
+  import(
+    db_table(
+      name = 'city', 
+      conn = db_conn('test-db')
+    ),
+    city %>% mutate(Name = tolower(Name)) %>% arrange(Name),
+    global = FALSE
+  )
+  
+  expect_equal(city$Name[3], 'a coruña (la coruña)')
+  expect_equal(city$Name[500], 'borås')
+  expect_equal(city$Name[4079], 'zytomyr')
 })

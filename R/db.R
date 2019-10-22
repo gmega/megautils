@@ -91,7 +91,8 @@ globals$table_cache <- Cache$new(cache_folder = 'table_cache')
 
 #' @rdname db
 #' @export
-import <- function(reference, ignore_cache = FALSE, global = TRUE, 
+import <- function(reference, expr = NULL, 
+                   ignore_cache = FALSE, global = TRUE, 
                    overwrite = TRUE) {
   target_env <- if (global) sys.frame(which = 0) else parent.frame(n = 1)
   if ((reference$name %in% names(target_env)) && !overwrite) {
@@ -115,6 +116,13 @@ import <- function(reference, ignore_cache = FALSE, global = TRUE,
              'not {do.call(paste, as.list(class(data)))}.')) 
     }
     write_rds(data, path = table_cache$entry_path(entry), compress = 'gz')
+  }
+
+  if (!is.null(expr)) {
+    sexpr <- substitute(expr)
+    envir <- list()
+    envir[[reference$name]] <- data
+    data <- eval(sexpr, envir = envir)
   }
   
   target_env[[reference$name]] <- data
