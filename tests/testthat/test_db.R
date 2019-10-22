@@ -136,17 +136,19 @@ test_that('parametric table does not barf with null connection', {
 
 test_that('import post-processing works', {
   import(
-    db_table(
-      name = 'city', 
-      conn = db_conn('test-db')
+    query_table(
+      name = 'city2', 
+      conn = db_conn('test-db'),
+      query = 'SELECT * FROM city'
     ),
     {
-      city %>% mutate(extra = 'extra')
+      .data %>% mutate(extra = 'extra')
     },
     global = FALSE
   )
   
-  expect_equal(city$extra[1], 'extra')
+  expect_equal(city2$extra[1], 'extra')
+  expect_equal(nrow(city2), 4079)
 
   # Commented out until we manage to get consistent encoding results
   # across platforms.
