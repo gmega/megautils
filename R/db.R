@@ -91,7 +91,7 @@ globals$table_cache <- Cache$new(cache_folder = 'table_cache')
 
 #' @rdname db
 #' @export
-import <- function(reference, expr = .data, 
+import <- function(reference, expr = .x, 
                    ignore_cache = FALSE, global = TRUE, 
                    overwrite = TRUE) {
   target_env <- if (global) sys.frame(which = 0) else parent.frame(n = 1)
@@ -120,7 +120,7 @@ import <- function(reference, expr = .data,
 
   target_env[[reference$name]] <- eval(
     substitute(expr), 
-    envir = list(.data = data)
+    envir = list(.x = data)
   )
 }
 

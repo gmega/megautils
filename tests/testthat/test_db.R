@@ -142,7 +142,7 @@ test_that('import post-processing works', {
       query = 'SELECT * FROM city'
     ),
     {
-      .data %>% mutate(extra = 'extra')
+      .x %>% mutate(extra = 'extra')
     },
     global = FALSE
   )

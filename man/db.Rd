@@ -16,7 +16,7 @@ materialize(reference, ...)
 
 size(reference, ...)
 
-import(reference, expr = .data, ignore_cache = FALSE, global = TRUE,
+import(reference, expr = .x, ignore_cache = FALSE, global = TRUE,
   overwrite = TRUE)
 
 cached_table(name)
