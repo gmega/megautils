@@ -36,6 +36,7 @@ Collate:
     'importer.R'
     'misc.R'
     'packages.R'
+    'plotly.R'
     'read_all.R'
 RoxygenNote: 6.1.1
 Suggests: 
