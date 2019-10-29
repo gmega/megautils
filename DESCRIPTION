@@ -1,7 +1,7 @@
 Package: megautils
 Type: Package
 Title: Collection of Utility Functions
-Version: 0.5.0
+Version: 0.6.0
 Author: Giuliano Mega
 Maintainer: Giuliano Mega <giuliano.mega@gmail.com>
 Description: A heterogeneous collection of utility functions that I 
@@ -11,6 +11,7 @@ LazyData: true
 License: BSD_3_clause + file LICENSE
 Imports: 
     dplyr (>= 0.8.3),
+    DBI (>= 1.0.0),
     magrittr (>= 1.5),
     purrr (>= 0.3.2), 
     readr (>= 1.1.1), 
@@ -26,17 +27,18 @@ Collate:
     'lists.R'
     'shortcuts.R'
     'cache.R'
+    'concurrency.R'
     'datetime.R'
     'globals.R'
     'db.R'
+    'db_reg.R'
     'dplyr-extras.R'
     'gcs.R'
-    'importer.R'
     'misc.R'
     'packages.R'
+    'plotly.R'
     'read_all.R'
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,
-    RMySQL (>= 0.10.17), 
-    DBI (>= 1.0.0)
+    RMySQL (>= 0.10.17)
