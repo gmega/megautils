@@ -26,3 +26,10 @@ weekday_all_labels <- function() {
     now + lubridate::make_difftime(day = 0:6 - offset)
   )
 }
+
+#' @export
+week_to_date <- function(weeks) {
+  dates <- as.POSIXct(rep('2019-01-01', length(weeks)))
+  week(dates) <- weeks
+  dates
+}

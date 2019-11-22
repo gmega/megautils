@@ -7,7 +7,7 @@
 \alias{into_tibble}
 \title{Read multiple files}
 \usage{
-read_all(path, pattern = "*")
+read_all()
 
 using(.p, readfun, ...)
 

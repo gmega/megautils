@@ -2,12 +2,11 @@
 % Please edit documentation in R/concurrency.R
 \name{realCores}
 \alias{realCores}
-\title{Simple wrapper to \link{parallel::detectCores} which yields the number of
-physical cores in Linux as well.}
+\title{Detect physical cores.}
 \usage{
 realCores()
 }
 \description{
-Simple wrapper to \link{parallel::detectCores} which yields the number of
+Simple wrapper to \link{detectCores} which yields the number of
 physical cores in Linux as well.
 }

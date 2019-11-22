@@ -1,4 +1,6 @@
-#' Simple wrapper to \link{parallel::detectCores} which yields the number of
+#' Detect physical cores.
+#' 
+#' Simple wrapper to \link{detectCores} which yields the number of
 #' physical cores in Linux as well.
 #' 
 #' @export
@@ -10,6 +12,6 @@ realCores <- function(){
   # Assuming the number of core ids represents the number of
   # physical cores:
   cpuinfo <- readLines('/proc/cpuinfo')
-  cores <- cpuinfo[grepl('core id'), cpuinfo]
+  cores <- cpuinfo[grepl('core id', cpuinfo)]
   length(unique(cores))
 }

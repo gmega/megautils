@@ -46,7 +46,7 @@
 #' ls(e)
 #'
 #' @export
-read_all <- function(path, pattern = '*') {
+read_all <- function() {
   list(
     fun = read_csv
   )
