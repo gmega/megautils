@@ -38,7 +38,6 @@ GCS_PATH_SEPARATOR = '/'
 #'          loader = read_csv
 #'       )
 #'    )
-#'  
 #' }
 #' 
 #' 

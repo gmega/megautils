@@ -46,6 +46,10 @@
 #' 
 #' @param reference a lazy table reference.
 #' 
+#' @param expr a post-processing expression to be run after the tibble has 
+#'     been loaded. The tibble can be referenced by `.x`; e.g., 
+#'     `import(<pars>, expr = .x %>% mutate(title = tolower(title)), <pars>)`
+#' 
 #' @param name a string containing the name of the lazy table reference. For
 #'     `db_table`, this has to match the name of the table in 
 #'     the database.
