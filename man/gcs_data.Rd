@@ -54,7 +54,6 @@ tabular data, provides functions which can be used in concert with
          loader = read_csv
       )
    )
- 
 }
 
 

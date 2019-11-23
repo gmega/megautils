@@ -34,6 +34,10 @@ table_references(ref_type, ref_parameters = l(), ...)
 \arguments{
 \item{reference}{a lazy table reference.}
 
+\item{expr}{a post-processing expression to be run after the tibble has 
+been loaded. The tibble can be referenced by `.x`; e.g., 
+`import(<pars>, expr = .x %>% mutate(title = tolower(title)), <pars>)`}
+
 \item{ignore_cache}{if set to `TRUE`, forces \link{import} to download data
 from the remote source again, even if it's already cached. Defaults to `FALSE`.}
 

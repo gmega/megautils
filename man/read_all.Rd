@@ -9,7 +9,7 @@
 \usage{
 read_all()
 
-using(.p, readfun, ...)
+using(.p, readfun = read_csv, ...)
 
 into_env(.p, namefun = default_naming)
 
@@ -17,23 +17,40 @@ into_tibble(.p, namefun = default_naming, namecol = "origin")
 }
 \arguments{
 \item{readfun}{the function which will be used to read each
-individual file; e.g., `dplyr::read_csv`.}
+individual file. Defaults to \link{read_csv}.}
 
-\item{...}{parameters passed on to readfun.}
+\item{...}{parameters passed on to readfun (e.g. `delim = ';'`)}
 
 \item{namefun}{a function which takes a string and returns a
 string. Each file processed by `into_env` will call this
 function once to determine which key to use into the destination
 environment. The default function uses the file name without its
-extension.}
+extension and replaces `-` with `_`.}
+
+\item{path}{filesystem path from where to read files (e.g. `/home/user/files`).}
+
+\item{pattern}{a pattern to filter files by. Accepts wildcards (e.g. 
+`pattern = '*.csv'`). Defaults to `*` (read all files).}
+
+\item{bucket}{name of the GCS bucket where to read files from.}
+
+\item{prefix}{GCS prefix of the files to be read.}
 }
 \description{
 Composable utility functions for reading multiple files from a
-given folder.
+given location.
 }
 \details{
 \describe{
-   \item{`into_tibble()`}{combines all files into a single
+   \item{`from_fs()`}{reads a set of files from the local filesystem.}
+   
+   \item{`from_gcs()`}{reads a set of files from a Google Cloud Storage 
+   bucket.}
+   
+   \item{`using()`}{specifies which read function to apply to the downloaded
+   data. Defaults to \link{read_csv}}
+
+\item{`into_tibble()`}{combines all files into a single
    Tibble. Equivalent to looping through the files, reading
    them, and then binding them together.}
 
@@ -52,13 +69,15 @@ path <- system.file('extdata', 'read_all', package = 'megautils')
 # Reads contents as single tibble.
 schema <- list(a = readr::col_integer(), b = readr::col_integer())
 
-read_all(path) \%>\%
+read_all() \%>\%
   using(readr::read_csv, col_types = schema) \%>\%
+  from_fs(path) \%>\%
   into_tibble()
 
 # Reads contents into environment.
-e <- read_all(path) \%>\%
+e <- read_all() \%>\%
    using(readr::read_csv, col_types = schema) \%>\%
+   from_fs(path) \%>\%
    into_env()
 
 ls(e)
