@@ -52,8 +52,21 @@ weekday_labels <- function() {
 
 #' @export
 week_to_date <- function(weeks, year = NULL) {
+  index_to_date(weeks, lubridate::`week<-`, year)
+}
+
+#' @export
+month_to_date <- function(months, year = NULL) {
+  # Workaround for lubridate bug: months with index above 2
+  # get mapped into one month before than what they should,
+  # so we sum 1.
+  months[months > 2] <- months[months > 2] + 1
+  index_to_date(months, lubridate::`month<-`, year)
+}
+
+index_to_date <- function(indices, part, year = NULL) {
   year <- if (is.null(year)) lubridate::year(lubridate::today()) else year
-  dates <- as.POSIXct(rep(g('{year}-01-01'), length(weeks)))
-  lubridate::week(dates) <- weeks
+  dates <- as.POSIXct(rep(g('{year}-01-01'), length(indices)))
+  dates <- part(dates, indices)
   dates
 }
