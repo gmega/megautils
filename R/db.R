@@ -1,4 +1,4 @@
-#' Inspect and import/cache database tables as \link[tibble]{tibble}s.
+#' Inspect and import/cache database tables as 
 #'
 #' Utility functions for reading remote tabular data into \link[tibble]{tibble}s 
 #' and caching them into disk for future use. If your data is stored in 
@@ -6,6 +6,7 @@
 #' \link{gcs_data}.
 #'
 #' \describe{
+#' 
 #'    \item{`db_table()`}{lazy reference to a database table which can 
 #'    be read into memory as a tibble and cached into disk.}
 #'
@@ -47,8 +48,7 @@
 #' @param reference a lazy table reference.
 #' 
 #' @param expr a post-processing expression to be run after the tibble has 
-#'     been loaded. The tibble can be referenced by `.x`; e.g., 
-#'     `import(<pars>, expr = .x %>% mutate(title = tolower(title)), <pars>)`
+#'     been loaded. The tibble can be referenced by `.x`.
 #' 
 #' @param name a string containing the name of the lazy table reference. For
 #'     `db_table`, this has to match the name of the table in 
