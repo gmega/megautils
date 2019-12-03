@@ -19,6 +19,11 @@ db_register <- function(
 }
 
 #' @export
+db_ls <- function() {
+  ls(.db_reg)
+}
+
+#' @export
 db_conn <- function(name, on_error = c('return_null', 'rethrow')) {
   entry <- .db_reg[[name]]
   if (is.null(entry)) {

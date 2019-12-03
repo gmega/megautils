@@ -1,7 +1,7 @@
 Package: megautils
 Type: Package
 Title: Collection of Utility Functions
-Version: 0.8.0
+Version: 0.9.0
 Author: Giuliano Mega
 Maintainer: Giuliano Mega <giuliano.mega@gmail.com>
 Description: A heterogeneous collection of utility functions that I 
@@ -32,6 +32,7 @@ Collate:
     'globals.R'
     'db.R'
     'db_reg.R'
+    'db_tbl.R'
     'dplyr-extras.R'
     'gcs.R'
     'math.R'
