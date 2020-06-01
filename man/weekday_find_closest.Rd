@@ -2,8 +2,7 @@
 % Please edit documentation in R/datetime.R
 \name{weekday_find_closest}
 \alias{weekday_find_closest}
-\title{Given a reference date object and a weekday as a string or numeric index, finds
-the closest instance of that weekday that happened before the reference date.}
+\title{Find the closest date matching a day of the week}
 \usage{
 weekday_find_closest(weekday, reference = NULL)
 }
@@ -16,6 +15,10 @@ labels for your system.}
 weekday.}
 }
 \description{
+Given a reference date object and a weekday as a string or numeric index, finds
+the closest instance of that weekday that happened before the reference date.
+}
+\details{
 For instance, if the reference date is a Friday and the weekday is "Saturday",
 the function will return last Saturday.
 }

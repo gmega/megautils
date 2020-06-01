@@ -185,7 +185,7 @@ size.db_table <- function(reference) {
   
   tbl(
     reference$conn, 
-    sql(sqlInterpolate(reference$conn, size_query, table = reference$name))
+    sql(DBI::sqlInterpolate(reference$conn, size_query, table = reference$name))
   ) %>% collect()
 }
 
@@ -212,7 +212,7 @@ pquery_table <- function(conn, query, name, query_parameters) {
 materialize.pquery_table <- function(reference) {
   query_table(
     conn = reference$conn,
-    query = sqlInterpolate(
+    query = DBI::sqlInterpolate(
       reference$conn, 
       reference$query, 
       .dots = reference$query_parameters

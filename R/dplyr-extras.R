@@ -19,6 +19,18 @@ select_opt <- function(.data, ...) {
 }
 
 #' @export
+filter_cols <- function(.tbl, ...) {
+  vals <- list(...)
+  vars <- names(vals)
+  if (length(vars) == 0) { return(.tbl) }
+  for (i in 1:length(vars)) {
+    .tbl <- .tbl %>%
+      filter(!!as.symbol(vars[i]) == !!vals[[i]])
+  }
+  .tbl
+}
+
+#' @export
 filter.list <- function(X, pred) {
   f <- function(.) { }
   body(f) <- substitute(pred)

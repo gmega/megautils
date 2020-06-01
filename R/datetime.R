@@ -1,4 +1,5 @@
-
+#' Find the closest date matching a day of the week
+#' 
 #' Given a reference date object and a weekday as a string or numeric index, finds
 #' the closest instance of that weekday that happened before the reference date.
 #' 
@@ -14,7 +15,7 @@
 #' 
 #' @export
 weekday_find_closest <- function(weekday, reference = NULL) {
-  reference <- if (is.null(reference)) lubridate::now() else reference
+  reference <- if (is.null(reference)) lubridate::now() else as.POSIXct(reference)
   weekday <- if (!is.numeric(weekday)) weekday_index(weekday) else weekday
   reference - lubridate::make_difftime(
     day = (as.POSIXlt(reference)$wday - weekday) %% 7)
@@ -50,6 +51,22 @@ weekday_labels <- function() {
   )
 }
 
+#' Convert datetime to weekday label
+#' 
+#' Returns locale-specific day-of-the-week labels for a date/datetime vector.
+#' 
+#' @seealso weekday_labels
+#' 
+#' @examples
+#' 
+#' datetime <- c('2020-04-23', '2020-04-24')
+#' weekday_label(datetime)
+#' 
+#' @export
+weekday_label <- function(datetime) {
+  weekday_labels()[lubridate::wday(datetime)]
+}
+
 #' @export
 week_to_date <- function(weeks, year = NULL) {
   index_to_date(weeks, lubridate::`week<-`, year)
@@ -57,16 +74,17 @@ week_to_date <- function(weeks, year = NULL) {
 
 #' @export
 month_to_date <- function(months, year = NULL) {
-  # Workaround for lubridate bug: months with index above 2
-  # get mapped into one month before than what they should,
-  # so we sum 1.
-  months[months > 2] <- months[months > 2] + 1
-  index_to_date(months, lubridate::`month<-`, year)
+  # Can't use `month<-` from lubridate as it generates the 
+  # wrong months for some reason.
+  years <- rep(NA, length(months))
+  years[] <- year
+  as.POSIXct(g('{year}-{months}-01'))
 }
 
 index_to_date <- function(indices, part, year = NULL) {
   year <- if (is.null(year)) lubridate::year(lubridate::today()) else year
-  dates <- as.POSIXct(rep(g('{year}-01-01'), length(indices)))
+  dates <- as.POSIXct(rep(NA, length(indices)))
+  dates[] <- g('{year}-01-01')
   dates <- part(dates, indices)
   dates
 }
