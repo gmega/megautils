@@ -63,3 +63,6 @@ reload <- function(package) {
     library(package)
   }))
 }
+
+#' @export
+`%nin%` <- Negate('%in%')

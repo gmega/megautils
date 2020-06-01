@@ -4,6 +4,12 @@ db_tbl <- function(name) {
 }
 
 #' @export
+db_tbl_sql <- function(query, ...) {
+  conn <- do.call(db_conn, default_db())
+  tbl(conn, sql(DBI::sqlInterpolate(conn, query, ...)))
+}
+
+#' @export
 set_default_db <- function(
   default_db_name, 
   default_on_error = c('return_null', 'rethrow')
