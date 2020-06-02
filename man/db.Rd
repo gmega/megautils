@@ -16,8 +16,13 @@ materialize(reference, ...)
 
 size(reference, ...)
 
-import(reference, expr = .x, ignore_cache = FALSE, global = TRUE,
-  overwrite = TRUE)
+import(
+  reference,
+  expr = .x,
+  ignore_cache = FALSE,
+  global = TRUE,
+  overwrite = TRUE
+)
 
 cached_table(name)
 
@@ -76,10 +81,10 @@ and caching them into disk for future use. If your data is stored in
 \details{
 \describe{
 
-\item{`db_table()`}{lazy reference to a database table which can 
+   \item{`db_table()`}{lazy reference to a database table which can 
    be read into memory as a tibble and cached into disk.}
 
-\item{`query_table()`}{lazy reference to a query result which can
+   \item{`query_table()`}{lazy reference to a query result which can
    be read into memory as a tibble and cached into disk.}
    
    \item{`pquery_table()`}{same as `query_table()`, but taking a
