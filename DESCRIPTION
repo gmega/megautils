@@ -1,7 +1,7 @@
 Package: megautils
 Type: Package
 Title: Collection of Utility Functions
-Version: 0.11.0
+Version: 0.12.0
 Author: Giuliano Mega
 Maintainer: Giuliano Mega <giuliano.mega@gmail.com>
 Description: A heterogeneous collection of utility functions that I 
@@ -40,7 +40,7 @@ Collate:
     'packages.R'
     'plotly.R'
     'read_all.R'
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Suggests: 
     testthat,
     RMySQL (>= 0.10.17)

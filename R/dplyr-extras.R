@@ -19,6 +19,13 @@ select_opt <- function(.data, ...) {
 }
 
 #' @export
+with_colnames <- function(.tbl, ..., .names = c()) {
+  .names <- if (length(.names) == 0) list(...) else .names
+  colnames(.tbl) <- .names
+  .tbl
+}
+
+#' @export
 filter_cols <- function(.tbl, ...) {
   vals <- list(...)
   vars <- names(vals)

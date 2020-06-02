@@ -50,11 +50,11 @@ given location.
    \item{`using()`}{specifies which read function to apply to the downloaded
    data. Defaults to \link{read_csv}}
 
-\item{`into_tibble()`}{combines all files into a single
+   \item{`into_tibble()`}{combines all files into a single
    Tibble. Equivalent to looping through the files, reading
    them, and then binding them together.}
 
-\item{`into_env()`}{reads each file and assigns
+   \item{`into_env()`}{reads each file and assigns
    its contents to a key within an environment. }
 }
 }
