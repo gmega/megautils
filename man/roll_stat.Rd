@@ -4,12 +4,15 @@
 \alias{roll_stat}
 \title{Computes rolling statistics}
 \usage{
-roll_stat(x, n, stat)
+roll_stat(x, n, stat, fill.length = NULL)
 }
 \arguments{
 \item{x}{a vector}
 
 \item{n}{a window size}
+
+\item{fill.length}{if set to something other than NULL, fills the resulting
+vector with this element until its length matches the length of the input.}
 }
 \description{
 Computes a rolling statistic `stat` over windows of size `n` taken from
