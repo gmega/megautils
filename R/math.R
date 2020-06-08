@@ -14,6 +14,9 @@ log1pneg <- function(x) {
 #' 
 #' @param x a vector
 #' @param n a window size 
+#' @param fill.length if set to something other than NULL, fills the resulting
+#' vector with this element until its length matches the length of the input.
+#' 
 #' @stat stat an aggregation function which returns a value for each window
 #' 
 #' @examples 
@@ -23,6 +26,7 @@ log1pneg <- function(x) {
 #'   roll_stat(x, n = 3, sum)
 #' 
 #' @export
-roll_stat <- function(x, n, stat) {
-  sapply(1:(length(x) - n + 1), function(i) stat(x[i:(i + n - 1)]))
+roll_stat <- function(x, n, stat, fill.length = NULL) {
+  y <- sapply(1:(length(x) - n + 1), function(i) stat(x[i:(i + n - 1)]))
+  if (!is.null(fill.length)) c(y, rep(fill.length, n - 1)) else y
 }
