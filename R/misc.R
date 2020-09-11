@@ -28,10 +28,11 @@ diff_na <- function(x, ...) {
 }
 
 #' @export
-order_factor <- function(X, col) {
+order_factor <- function(X, col, duplicate_values = FALSE) {
   cols <- names(X)
   col <- eval(substitute(select_vars(cols, col)))
-  X[[col]] <- factor(X[[col]], levels = X[[col]])
+  X[[col]] <- factor(X[[col]], levels = 
+                       if(duplicate_values) unique(X[[col]]) else X[[col]])
   X
 }
 
